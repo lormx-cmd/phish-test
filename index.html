@@ -1,66 +1,88 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <title>Connexion Microsoft (Simulation)</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f3f3f3;
-            text-align: center;
-            margin-top: 100px;
-        }
-        .warning {
-            color: orange;
-            font-weight: bold;
-        }
-        .login-box {
-            background-color: white;
-            padding: 30px;
-            margin: auto;
-            width: 300px;
-            box-shadow: 0 0 10px gray;
-            border-radius: 10px;
-        }
-        input {
-            margin: 10px 0;
-            padding: 10px;
-            width: 90%;
-        }
-        button {
-            padding: 10px 20px;
-        }
-        #info {
-            margin-top: 20px;
-            color: #555;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>Connexion Microsoft (Simulation)</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f2f2f2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 50px;
+    }
+
+    .warning {
+      color: orange;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+
+    .login-box {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      width: 300px;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+    }
+
+    button {
+      padding: 10px;
+      width: 100%;
+      background-color: #0078D4;
+      color: white;
+      border: none;
+      border-radius: 4px;
+    }
+
+    #ip-info {
+      margin-top: 30px;
+      font-size: 0.9em;
+      color: #555;
+    }
+  </style>
 </head>
 <body>
 
-    <p class="warning">⚠️ Ceci est une simulation à but pédagogique. Aucune donnée n’est collectée.</p>
+  <div class="warning">⚠️ Ceci est une simulation pédagogique. Aucune donnée n'est enregistrée.</div>
 
-    <div class="login-box">
-        <h2>Connexion Microsoft</h2>
-        <form onsubmit="alert('Simulation réussie : vous avez cliqué sur Connexion.'); return false;">
-            <input type="email" placeholder="Adresse e-mail" required><br>
-            <input type="password" placeholder="Mot de passe" required><br>
-            <button type="submit">Connexion</button>
-        </form>
-    </div>
+  <div class="login-box">
+    <h2>Connexion Microsoft</h2>
+    <form onsubmit="handleSubmit(event)">
+      <input type="email" placeholder="Adresse e-mail" required>
+      <input type="password" placeholder="Mot de passe" required>
+      <button type="submit">Connexion</button>
+    </form>
+  </div>
 
-    <div id="info"></div>
+  <div id="ip-info">Chargement des infos IP...</div>
 
-    <script>
-        fetch("https://ipinfo.io/json?token=8c080494eee762")
-            .then(response => response.json())
-            .then(data => {
-                const info = document.getElementById("info");
-                info.innerText = `Ton IP est ${data.ip}, et tu es localisé à ${data.city}, ${data.region} (${data.country}).`;
-            })
-            .catch(() => {
-                document.getElementById("info").innerText = "Impossible de récupérer les infos IP.";
-            });
-    </script>
+  <script>
+    // Affichage des infos IP depuis IPInfo
+    fetch("https://ipinfo.io/json?token=8c080494eee762")
+      .then(response => response.json())
+      .then(data => {
+        const ipInfo = document.getElementById("ip-info");
+        ipInfo.innerHTML = `Ton IP est <b>${data.ip}</b>.<br>
+                            Tu es localisé à <b>${data.city}, ${data.region}</b> (${data.country}).`;
+      })
+      .catch(err => {
+        document.getElementById("ip-info").innerText = "Impossible de récupérer les infos IP.";
+      });
+
+    // Simulation du vol de mot de passe
+    function handleSubmit(event) {
+      event.preventDefault();
+      alert("Simulation réussie : vous avez soumis vos identifiants (aucune donnée n’est collectée).");
+    }
+  </script>
+
 </body>
 </html>
