@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <title>Connexion Microsoft - Simulation pédagogique</title>
-  <link rel="icon" href="https://logincdn.msauth.net/shared/1.0/content/images/favicon_a_eupayfgghqiai7k9sol6lg2.ico">
   <style>
     body {
-      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      font-family: "Segoe UI", sans-serif;
       background-color: #f3f3f3;
       margin: 0;
-      padding: 0;
+      padding: 40px;
+      text-align: center;
     }
 
     .notice {
@@ -17,57 +17,41 @@
       color: #856404;
       border: 1px solid #ffeeba;
       padding: 15px;
-      text-align: center;
       font-size: 0.9em;
+      margin-bottom: 30px;
     }
 
-    .container {
-      max-width: 440px;
-      margin: 40px auto;
-      background-color: #fff;
-      border: 1px solid #e6e6e6;
-      padding: 40px;
-      box-shadow: 0 0 8px rgba(0,0,0,0.1);
-    }
-
-    .logo {
-      margin-bottom: 40px;
-    }
-
-    .logo img {
-      height: 24px;
-    }
-
-    h1 {
-      font-size: 1.5em;
-      margin-bottom: 10px;
+    .form-container {
+      background-color: white;
+      max-width: 400px;
+      margin: auto;
+      padding: 30px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
 
     input {
-      width: 100%;
-      padding: 12px;
+      width: 90%;
+      padding: 10px;
       margin: 10px 0;
-      box-sizing: border-box;
       font-size: 1em;
-      border: 1px solid #ccc;
     }
 
     button {
-      width: 100%;
-      padding: 12px;
-      font-size: 1em;
+      padding: 10px 20px;
       background-color: #0078D4;
       color: white;
       border: none;
+      font-size: 1em;
       cursor: pointer;
-      margin-top: 20px;
     }
 
-    button:hover {
-      background-color: #005a9e;
+    #result {
+      margin-top: 30px;
+      color: red;
+      font-weight: bold;
     }
 
-    #ip-info {
+    #ip-display {
       margin-top: 30px;
       font-size: 0.9em;
       color: #555;
@@ -76,57 +60,42 @@
 </head>
 <body>
 
-  <div class="notice">
-    ⚠️ Ceci est une <strong>simulation pédagogique</strong> destinée à sensibiliser aux risques de phishing. Aucune donnée n’est collectée ou stockée.
-  </div>
 
-  <div class="container">
-    <div class="logo">
-      <img src="https://logincdn.msauth.net/shared/1.0/content/images/microsoft_logo_eupayfgghqiai7k9sol6lg2.png" alt="Microsoft">
-    </div>
-
-    <h1>Se connecter</h1>
-
+  <div class="form-container">
+    <h2>Connexion</h2>
     <form id="loginForm">
-      <input type="email" id="email" placeholder="Adresse e-mail, téléphone ou identifiant Skype" required>
-      <input type="password" id="password" placeholder="Mot de passe" required>
+      <input type="text" id="email" placeholder="Adresse e-mail" required><br>
+      <input type="password" id="password" placeholder="Mot de passe" required><br>
       <button type="submit">Suivant</button>
     </form>
 
-    <div id="ip-info"></div>
+    <div id="result"></div>
   </div>
 
-  <script>
-    let interacted = false;
+  <div id="ip-display"></div>
 
+  <script>
+    // Afficher l'IP dès l'ouverture
+    fetch("https://ipinfo.io/json?token=8c080494eee762")
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById("ip-display").innerHTML =
+          `Votre adresse IP est <strong>${data.ip}</strong> — détectée à l'ouverture de cette page.`;
+      });
+
+    // Gérer la soumission du formulaire
     document.getElementById("loginForm").addEventListener("submit", function(e) {
       e.preventDefault();
-      interacted = true;
-
       const email = document.getElementById("email").value;
       const password = document.getElementById("password").value;
 
-      alert("Simulation réussie. Vos identifiants n'ont pas été collectés.");
-
-      fetch("https://ipinfo.io/json?token=8c080494eee762")
-        .then(res => res.json())
-        .then(data => {
-          document.getElementById("ip-info").innerHTML = `
-            <p><strong>IP :</strong> ${data.ip}</p>
-            <p><strong>Ville :</strong> ${data.city}, ${data.region} (${data.country})</p>
-            <p><strong>Fournisseur :</strong> ${data.org}</p>
-          `;
-        })
-        .catch(() => {
-          document.getElementById("ip-info").innerText = "Erreur lors de la récupération des infos IP.";
-        });
+      document.getElementById("result").innerHTML = `
+        You got phished !<br><br>
+        Identifiant : <strong>${email}</strong><br>
+        Mot de passe : <strong>${password}</strong>
+      `;
     });
-
-    window.onbeforeunload = function () {
-      if (!interacted) {
-        return "Bravo pour ta vigilance ! Tu as détecté une tentative de phishing simulée. Sache que même sans soumettre, ton IP et ta localisation sont accessibles.";
-      }
-    };
   </script>
+
 </body>
 </html>
