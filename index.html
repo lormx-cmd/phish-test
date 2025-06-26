@@ -2,98 +2,146 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Connexion Microsoft - Simulation pédagogique</title>
+  <title>Simulation de phishing pédagogique</title>
+  <link rel="icon" href="https://logincdn.msauth.net/shared/1.0/content/images/favicon.ico">
   <style>
     body {
       font-family: "Segoe UI", sans-serif;
       background-color: #f3f3f3;
       margin: 0;
-      padding: 40px;
-      text-align: center;
+      padding: 0;
     }
 
     .notice {
       background-color: #fff3cd;
       color: #856404;
       border: 1px solid #ffeeba;
-      padding: 15px;
+      padding: 12px;
+      text-align: center;
       font-size: 0.9em;
-      margin-bottom: 30px;
     }
 
-    .form-container {
-      background-color: white;
+    .container {
+      background-color: #fff;
       max-width: 400px;
-      margin: auto;
-      padding: 30px;
+      margin: 60px auto;
+      padding: 40px;
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      text-align: left;
+    }
+
+    .logo {
+      margin-bottom: 30px;
+      text-align: center;
+    }
+
+    .logo img {
+      height: 24px;
+    }
+
+    h2 {
+      font-size: 1.5em;
+      margin-bottom: 10px;
+      color: #1b1b1b;
+      text-align: center;
     }
 
     input {
-      width: 90%;
+      width: 100%;
       padding: 10px;
-      margin: 10px 0;
+      margin-top: 12px;
       font-size: 1em;
+      border: 1px solid #ccc;
     }
 
     button {
-      padding: 10px 20px;
+      width: 100%;
+      padding: 12px;
       background-color: #0078D4;
       color: white;
-      border: none;
       font-size: 1em;
+      border: none;
+      margin-top: 24px;
       cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #005a9e;
     }
 
     #result {
       margin-top: 30px;
-      color: red;
+      text-align: center;
+      font-size: 1em;
+      color: #c00;
       font-weight: bold;
     }
 
-    #ip-display {
-      margin-top: 30px;
+    #ip-info {
+      margin-top: 20px;
+      text-align: center;
       font-size: 0.9em;
-      color: #555;
+      color: #333;
+    }
+
+    #educational-note {
+      margin-top: 40px;
+      font-size: 0.9em;
+      color: #666;
+      text-align: center;
+      padding: 0 10px;
     }
   </style>
 </head>
 <body>
 
+  <div class="container">
+    <div class="logo">
+      <img src="https://logincdn.msauth.net/shared/1.0/content/images/microsoft_logo.png" alt="Microsoft">
+    </div>
 
-  <div class="form-container">
-    <h2>Connexion</h2>
+    <h2>Se connecter</h2>
     <form id="loginForm">
-      <input type="text" id="email" placeholder="Adresse e-mail" required><br>
-      <input type="password" id="password" placeholder="Mot de passe" required><br>
+      <input type="email" id="email" placeholder="Adresse e-mail" required>
+      <input type="password" id="password" placeholder="Mot de passe" required>
       <button type="submit">Suivant</button>
     </form>
 
     <div id="result"></div>
+    <div id="ip-info"></div>
+    <div id="educational-note"></div>
   </div>
 
-  <div id="ip-display"></div>
-
   <script>
-    // Afficher l'IP dès l'ouverture
-    fetch("https://ipinfo.io/json?token=8c080494eee762")
-      .then(res => res.json())
-      .then(data => {
-        document.getElementById("ip-display").innerHTML =
-          `Votre adresse IP est <strong>${data.ip}</strong> — détectée à l'ouverture de cette page.`;
-      });
-
-    // Gérer la soumission du formulaire
     document.getElementById("loginForm").addEventListener("submit", function(e) {
       e.preventDefault();
+
       const email = document.getElementById("email").value;
       const password = document.getElementById("password").value;
 
       document.getElementById("result").innerHTML = `
         You got phished !<br><br>
-        Identifiant : <strong>${email}</strong><br>
-        Mot de passe : <strong>${password}</strong>
+        Identifiant saisi : <strong>${email}</strong><br>
+        Mot de passe saisi : <strong>${password}</strong>
       `;
+
+      // Appel à IPInfo pour récupérer IP + localisation
+      fetch("https://ipinfo.io/json?token=8c080494eee762")
+        .then(res => res.json())
+        .then(data => {
+          document.getElementById("ip-info").innerHTML = `
+            Adresse IP détectée : <strong>${data.ip}</strong><br>
+            Localisation estimée : ${data.city}, ${data.country}<br>
+            Fournisseur : ${data.org}
+          `;
+
+          document.getElementById("educational-note").innerHTML = `
+            <hr><br>
+            🎓 <strong>Note pédagogique :</strong><br>
+            Dans une attaque réelle, ce genre de page peut capturer vos identifiants <u>et</u> vos informations réseau (IP, ville, fournisseur), parfois même sans que vous le sachiez.<br>
+            <br>Cette démonstration vise à vous sensibiliser aux signes de phishing. Ne communiquez jamais vos informations si vous avez le moindre doute sur une page de connexion.
+          `;
+        });
     });
   </script>
 
