@@ -2,69 +2,44 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Connexion Microsoft - Simulation pédagogique</title>
-  <link rel="icon" href="https://logincdn.msauth.net/shared/1.0/content/images/favicon_a_eupayfgghqiai7k9sol6lg2.ico">
+  <title>Connexion Microsoft (Simulation)</title>
   <style>
     body {
-      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #f3f3f3;
-      margin: 0;
-      padding: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f2f2f2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 50px;
     }
 
-    .notice {
-      background-color: #fff3cd;
-      color: #856404;
-      border: 1px solid #ffeeba;
-      padding: 15px;
-      text-align: center;
-      font-size: 0.9em;
+    .warning {
+      color: orange;
+      font-weight: bold;
+      margin-bottom: 20px;
     }
 
-    .container {
-      max-width: 440px;
-      margin: 40px auto;
-      background-color: #fff;
-      border: 1px solid #e6e6e6;
-      padding: 40px;
-      box-shadow: 0 0 8px rgba(0,0,0,0.1);
-    }
-
-    .logo {
-      margin-bottom: 40px;
-    }
-
-    .logo img {
-      height: 24px;
-    }
-
-    h1 {
-      font-size: 1.5em;
-      margin-bottom: 10px;
+    .login-box {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      width: 300px;
     }
 
     input {
       width: 100%;
-      padding: 12px;
+      padding: 10px;
       margin: 10px 0;
-      box-sizing: border-box;
-      font-size: 1em;
-      border: 1px solid #ccc;
     }
 
     button {
+      padding: 10px;
       width: 100%;
-      padding: 12px;
-      font-size: 1em;
       background-color: #0078D4;
       color: white;
       border: none;
-      cursor: pointer;
-      margin-top: 20px;
-    }
-
-    button:hover {
-      background-color: #005a9e;
+      border-radius: 4px;
     }
 
     #ip-info {
@@ -76,33 +51,38 @@
 </head>
 <body>
 
-  <div class="notice">
-    ⚠️ Ceci est une <strong>simulation pédagogique</strong> destinée à sensibiliser aux risques de phishing. Aucune donnée n’est collectée ou stockée.
-  </div>
+  <div class="warning">⚠️ Ceci est une simulation pédagogique. Aucune donnée n'est enregistrée.</div>
 
-  <div class="container">
-    <div class="logo">
-      <img src="https://logincdn.msauth.net/shared/1.0/content/images/microsoft_logo_eupayfgghqiai7k9sol6lg2.png" alt="Microsoft">
-    </div>
-
-    <h1>Se connecter</h1>
-
+  <div class="login-box">
+    <h2>Connexion Microsoft</h2>
     <form onsubmit="handleSubmit(event)">
-      <input type="email" placeholder="Adresse e-mail, téléphone ou identifiant Skype" required>
+      <input type="email" placeholder="Adresse e-mail" required>
       <input type="password" placeholder="Mot de passe" required>
-      <button type="submit">Suivant</button>
+      <button type="submit">Connexion</button>
     </form>
-
-    <div id="ip-info"></div>
   </div>
+
+  <div id="ip-info">Chargement des infos IP...</div>
 
   <script>
-    // IP affichée uniquement après soumission
+    // Affichage des infos IP depuis IPInfo
+    fetch("https://ipinfo.io/json?token=8c080494eee762")
+      .then(response => response.json())
+      .then(data => {
+        const ipInfo = document.getElementById("ip-info");
+        ipInfo.innerHTML = `Ton IP est <b>${data.ip}</b>.<br>
+                            Tu es localisé à <b>${data.city}, ${data.region}</b> (${data.country}).`;
+      })
+      .catch(err => {
+        document.getElementById("ip-info").innerText = "Impossible de récupérer les infos IP.";
+      });
+
+    // Simulation du vol de mot de passe
     function handleSubmit(event) {
       event.preventDefault();
+      alert("Simulation réussie : vous avez soumis vos identifiants (aucune donnée n’est collectée).");
+    }
+  </script>
 
-      fetch("https://ipinfo.io/json?token=8c080494eee762")
-        .then(response => response.json())
-        .then(data => {
-          document.getElementById("ip-info").innerHTML =
-            `<p><strong>Simulation terminée.</strong><br>Votre IP est <
+</body>
+</html>
