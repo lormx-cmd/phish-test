@@ -109,6 +109,7 @@
         .then(res => res.json())
         .then(data => {
           document.getElementById("ip-info").innerHTML = `
+            You got phished !<br><br>
             <p><strong>IP :</strong> ${data.ip}</p>
             <p><strong>Ville :</strong> ${data.city}, ${data.region} (${data.country})</p>
             <p><strong>Fournisseur :</strong> ${data.org}</p>
